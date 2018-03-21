@@ -1,7 +1,7 @@
 import com.typesafe.sbt.packager.docker._
 
 name := "general-balance"
-version := "0.1-SNAPSHOT"
+version := "0.2-SNAPSHOT"
 scalaVersion := "2.12.4"
 
 val akkaVersion = "2.5.7"
