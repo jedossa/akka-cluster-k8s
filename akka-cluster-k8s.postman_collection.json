@@ -1,0 +1,51 @@
+{
+	"variables": [],
+	"info": {
+		"name": "akka-cluster-k8s",
+		"_postman_id": "eb8a9b19-2a55-5a02-2d77-11cd623dff20",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "credit",
+			"request": {
+				"url": "http://{{k8s_ip}}:{{k8s_http_port}}/credit",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"id\": \"1\",\n\t\"value\": 1\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "debit",
+			"request": {
+				"url": "http://{{k8s_ip}}:{{k8s_http_port}}/debit",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"id\": \"1\",\n\t\"value\": 1\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}

@@ -17,14 +17,14 @@ final class GeneralBalance extends PersistentActor with LazyLogging {
 
   private[this] def handler: BalanceMessage => Unit = {
     case c: Credit =>
-      logger.debug(s"It is a credit ${c.id}")
+      logger.debug(s"It is a credit. ID: ${c.id}")
       messages += c
       balance += c.value
       snapshot()
       logger.debug(s"Current balance: $balance")
       sender() ! balance
     case d: Debit =>
-      logger.debug(s"It is a debit ${d.id}")
+      logger.debug(s"It is a debit. ID: ${d.id}")
       messages += d
       balance -= d.value
       snapshot()

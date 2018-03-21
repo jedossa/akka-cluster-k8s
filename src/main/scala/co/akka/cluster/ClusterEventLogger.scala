@@ -40,7 +40,7 @@ final class ClusterEventLogger(role: ClusterRole)
   private[ClusterEventLogger] def loadClusterState(): Unit = {
     logger.debug(s"== Node startup ==")
     cluster.state.members.foreach { member =>
-      logger.debug(s"${member.uniqueAddress}")
+      logger.debug(s"member.uniqueAddress = ${member.uniqueAddress}")
       registerNode(member)
     }
   }
@@ -58,21 +58,20 @@ final class ClusterEventLogger(role: ClusterRole)
   private[ClusterEventLogger] def inform(leader: Option[Address]): Unit =
     leader foreach { l =>
       logger.info("== LeaderChanged ==")
-      logger.info(s"${l.protocol}")
-      logger.info(s"${l.system}")
-      logger.info(s"${l.host}")
-      logger.info(s"${l.port}")
+      logger.info(s"leader.protocol = ${l.protocol}")
+      logger.info(s"leader.system = ${l.system}")
+      logger.info(s"leader.host = ${l.host}")
+      logger.info(s"leader.port = ${l.port}")
     }
 
   private[ClusterEventLogger] def inform(state: CurrentClusterState): Unit = {
-    logger.info("=== CurrentClusterState ==")
-    logger.info(s"${state.leader}")
-    logger.info(s"${state.members}")
-    logger.info(s"${state.roleLeaderMap}")
-    logger.info(s"${state.seenBy}")
-    logger.info(s"${state.unreachable}")
+    logger.info("== CurrentClusterState ==")
+    logger.info(s"clusterState.leader = ${state.leader}")
+    logger.info(s"clusterState.members = ${state.members}")
+    logger.info(s"clusterState.roleLeaderMap = ${state.roleLeaderMap}")
+    logger.info(s"clusterState.seenBy = ${state.seenBy}")
+    logger.info(s"clusterState.unreachable = ${state.unreachable}")
   }
-
 }
 
 object ClusterEventLogger {
