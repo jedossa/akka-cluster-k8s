@@ -1,0 +1,2 @@
+#!/bin/bash
+kubectl create -f akka-cluster.yml

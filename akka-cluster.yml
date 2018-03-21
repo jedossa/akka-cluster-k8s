@@ -1,0 +1,120 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: general-balance
+  name: general-balance
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: general-balance
+  template:
+    metadata:
+      labels:
+        app: general-balance
+        role: akka-cluster
+    spec:
+      containers:
+      - name: general-balance
+        image: general-balance:0.1-SNAPSHOT
+        imagePullPolicy: Never
+        env:
+        - name: NODE_ROLE
+          value: "client"
+        - name: HOST_NAME
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: status.podIP
+        livenessProbe:
+          tcpSocket:
+            port: 19999
+        ports:
+        # akka remoting
+        - name: remoting
+          containerPort: 2552
+          protocol: TCP
+        # akka-management bootstrap
+        - name: bootstrap
+          containerPort: 8558
+          protocol: TCP
+        # external http
+        - name: http
+          containerPort: 19999
+          protocol: TCP
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: general-balance-service
+spec:
+  clusterIP: None
+  selector:
+    role: akka-cluster
+  ports:
+  - protocol: TCP
+    name: boostrap
+    port: 8558
+    targetPort: 8558
+
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: data
+  name: data
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: data
+  template:
+    metadata:
+      labels:
+        app: data
+        role: akka-cluster
+    spec:
+      containers:
+      - name: data
+        image: general-balance:0.1-SNAPSHOT
+        imagePullPolicy: Never
+        env:
+        - name: NODE_ROLE
+          value: "data"
+        - name: HOST_NAME
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: status.podIP
+        livenessProbe:
+          tcpSocket:
+            port: 19999
+        ports:
+        # akka remoting
+        - name: remoting
+          containerPort: 2552
+          protocol: TCP
+        # akka-management bootstrap
+        - name: bootstrap
+          containerPort: 8558
+          protocol: TCP
+        - name: http
+          containerPort: 19999
+          protocol: TCP
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: http-service
+spec:
+  type: NodePort
+  selector:
+    app: general-balance
+  ports:
+  - protocol: TCP
+    name: http
+    port: 8080
+    targetPort: 8080

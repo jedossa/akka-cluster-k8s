@@ -1,0 +1,8 @@
+#!/bin/bash
+kubectl delete services,pods,deployment -l app=general-balance
+kubectl delete services,pods,deployment general-balance-service
+
+kubectl delete services,pods,deployment -l app=data
+kubectl delete services,pods,deployment data
+
+kubectl delete services,pods,deployment http-service

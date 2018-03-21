@@ -1,0 +1,107 @@
+# Persistent volume for cassandra0
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: datadir-cassandra-0
+  labels:
+    type: local
+spec:
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/tmp/cassandra0"
+---
+# Stateful set
+apiVersion: "apps/v1beta1"
+kind: StatefulSet
+metadata:
+  name: cassandra
+spec:
+  serviceName: cassandra
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: cassandra
+    spec:
+      containers:
+      - name: cassandra
+        image: gcr.io/google-samples/cassandra:v11
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 7000
+          name: intra-node
+        - containerPort: 7001
+          name: tls-intra-node
+        - containerPort: 7199
+          name: jmx
+        - containerPort: 9042
+          name: cql
+        resources:
+          limits:
+            cpu: "500m"
+            memory: 1Gi # Cannot be less than 1Gi
+          requests:
+           cpu: "500m"
+           memory: 1Gi # Cannot be less than 1Gi
+        securityContext:
+          capabilities:
+            add:
+              - IPC_LOCK
+        env:
+          - name: MAX_HEAP_SIZE
+            value: 512M
+          - name: HEAP_NEWSIZE
+            value: 100M
+          - name: CASSANDRA_SEEDS
+            value: "cassandra-0.cassandra.default.svc.cluster.local"
+          - name: CASSANDRA_CLUSTER_NAME
+            value: "cassandra-cluster"
+          - name: CASSANDRA_DC
+            value: "cassandra-dc"
+          - name: CASSANDRA_RACK
+            value: "cassandra-rack"
+          - name: CASSANDRA_AUTO_BOOTSTRAP
+            value: "false"
+          - name: POD_IP
+            valueFrom:
+              fieldRef:
+                fieldPath: status.podIP
+        readinessProbe:
+          exec:
+            command:
+            - /bin/bash
+            - -c
+            - /ready-probe.sh
+          initialDelaySeconds: 15
+          timeoutSeconds: 5
+        volumeMounts:
+        - name: datadir
+          mountPath: /cassandra_data
+  volumeClaimTemplates:
+  - metadata:
+      name: datadir
+      namespace: default
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 10Gi
+---
+# Headless service
+apiVersion: v1
+kind: Service
+metadata:
+  name: cassandra
+  labels:
+    app: cassandra
+spec:
+  type: NodePort
+  ports:
+    - port: 9042
+      name: cql
+  selector:
+    app: cassandra
+---
