@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: general-balance
-        image: general-balance:0.2-SNAPSHOT
+        image: general-balance:0.3-SNAPSHOT
         imagePullPolicy: Never
         env:
         - name: NODE_ROLE
@@ -78,7 +78,7 @@ spec:
     spec:
       containers:
       - name: data
-        image: general-balance:0.2-SNAPSHOT
+        image: general-balance:0.3-SNAPSHOT
         imagePullPolicy: Never
         env:
         - name: NODE_ROLE
