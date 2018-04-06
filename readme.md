@@ -3,4 +3,4 @@ The aim of this workshop is to get familiar with Akka Management Service Discove
 
 [http://scalar-conf.com/](http://scalar-conf.com/) 2018
 
-TODO: Add instructions to install K8S & C* and use groll 
+Slides: [https://speakerdeck.com/jedossa/akka-cluster-k8s](https://speakerdeck.com/jedossa/akka-cluster-k8s)
