@@ -29,7 +29,7 @@ spec:
       containers:
       - name: cassandra
         image: gcr.io/google-samples/cassandra:v11
-        imagePullPolicy: Never
+        imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 7000
           name: intra-node

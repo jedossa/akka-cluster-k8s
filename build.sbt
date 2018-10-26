@@ -1,13 +1,13 @@
 import com.typesafe.sbt.packager.docker._
 
 name := "general-balance"
-version := "0.3-SNAPSHOT"
-scalaVersion := "2.12.4"
+version := "0.1-SNAPSHOT"
+scalaVersion := "2.12.7"
 
-val akkaVersion = "2.5.7"
-val akkaHttpVersion = "10.0.11"
-val akkaMgmtVersion = "0.9.0"
-val circeVersion = "0.9.1"
+val akkaVersion = "2.5.17"
+val akkaHttpVersion = "10.1.5"
+val akkaMgmtVersion = "0.18.0"
+val circeVersion = "0.10.0"
 
 libraryDependencies ++= Seq(
   "com.typesafe.akka" %% "akka-actor" % akkaVersion withSources () withJavadoc (),
@@ -25,10 +25,10 @@ libraryDependencies ++= Seq(
   "io.circe" %% "circe-generic" % circeVersion,
   "io.circe" %% "circe-parser" % circeVersion,
   "io.circe" %% "circe-java8" % circeVersion,
-  "de.heikoseeberger" %% "akka-http-circe" % "1.20.0",
+  "de.heikoseeberger" %% "akka-http-circe" % "1.22.0",
   "de.heikoseeberger" %% "akka-log4j" % "1.6.1",
   "com.typesafe" % "config" % "1.3.2",
-  "com.typesafe.scala-logging" %% "scala-logging" % "3.8.0",
+  "com.typesafe.scala-logging" %% "scala-logging" % "3.9.0",
   "ch.qos.logback" % "logback-classic" % "1.2.3"
 )
 
@@ -59,6 +59,8 @@ dockerCommands :=
       Seq(Cmd("ENTRYPOINT", args.mkString(" ")))
     case v => Seq(v)
   }
+
+dockerExposedPorts := Seq(8080, 8558, 2552)
 
 dockerCommands += Cmd("USER", "root")
 

@@ -17,8 +17,8 @@ spec:
     spec:
       containers:
       - name: general-balance
-        image: general-balance:0.3-SNAPSHOT
-        imagePullPolicy: Never
+        image: general-balance:0.1-SNAPSHOT
+        imagePullPolicy: IfNotPresent
         env:
         - name: NODE_ROLE
           value: "client"
@@ -29,20 +29,17 @@ spec:
               fieldPath: status.podIP
         livenessProbe:
           tcpSocket:
-            port: 19999
+            port: 8558
         ports:
         # akka remoting
         - name: remoting
           containerPort: 2552
           protocol: TCP
         # akka-management bootstrap
-        - name: bootstrap
+        - name: management
           containerPort: 8558
           protocol: TCP
-        # external http
-        - name: http
-          containerPort: 19999
-          protocol: TCP
+
 ---
 kind: Service
 apiVersion: v1
@@ -54,7 +51,7 @@ spec:
     role: akka-cluster
   ports:
   - protocol: TCP
-    name: boostrap
+    name: management
     port: 8558
     targetPort: 8558
 
@@ -78,8 +75,8 @@ spec:
     spec:
       containers:
       - name: data
-        image: general-balance:0.3-SNAPSHOT
-        imagePullPolicy: Never
+        image: general-balance:0.1-SNAPSHOT
+        imagePullPolicy: IfNotPresent
         env:
         - name: NODE_ROLE
           value: "data"
@@ -90,18 +87,15 @@ spec:
               fieldPath: status.podIP
         livenessProbe:
           tcpSocket:
-            port: 19999
+            port: 8558
         ports:
         # akka remoting
         - name: remoting
           containerPort: 2552
           protocol: TCP
         # akka-management bootstrap
-        - name: bootstrap
+        - name: management
           containerPort: 8558
-          protocol: TCP
-        - name: http
-          containerPort: 19999
           protocol: TCP
 
 ---
